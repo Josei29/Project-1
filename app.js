@@ -3,6 +3,12 @@ $(document).ready(function () {
     var Units = "imperial";
     var lat;
     var long;
+    var sitesLat = [];
+    var sitesLng = [];
+    var restLat = [];
+    var restLng = [];
+    var barLat = [];
+    var barLng = [];
 
     // Index HTML
     $("#searchButton").on("click", function (event) {
@@ -56,7 +62,7 @@ $(document).ready(function () {
             long = response.city.coord.lon;
             console.log(lat);
             console.log(long);
-            check();
+            
             $("#loadingScreen").hide();
             // window.location = "./home.html"
             map()
@@ -79,10 +85,17 @@ $(document).ready(function () {
                 method: 'GET'
             }).then(function (response) {
                 console.log(response);
+                sitesLat = [];
+                sitesLng = [];
                 for (var i = 0; i <= 10; i++) {
                     // response.searchResults[i]
                     $("#sitesBody").append("<tr><td>" + response.searchResults[i].name + "</td></tr>");
+                    var x = response.searchResults[i].fields.disp_lat;
+                    var y = response.searchResults[i].fields.disp_lng;
+                    sitesLat.push(x);
+                    sitesLng.push(y);
                 }
+                console.log(sitesLat)
             })
             var QueryUrl1 = "https://www.mapquestapi.com/search/v2/radius?origin=" + city + "&radius=5&maxMatches=10&ambiguities=ignore&hostedData=mqap.ntpois|group_sic_code=?|581208&outFormat=json&key=" + ApiKey;
             $.ajax({
@@ -90,9 +103,15 @@ $(document).ready(function () {
                 method: 'GET'
             }).then(function (response) {
                 console.log(response);
+                restLat = [];
+                restLng = [];
                 for (var i = 0; i <= 10; i++) {
                     // response.searchResults[i]
                     $("#restBody").append("<tr><td>" + response.searchResults[i].name + "</td></tr>");
+                    var x = response.searchResults[i].fields.disp_lat;
+                    var y = response.searchResults[i].fields.disp_lng;
+                    restLat.push(x);
+                    restLng.push(y);
                 }
             })
             var QueryUrl3 = "https://www.mapquestapi.com/search/v2/radius?origin=" + city + "&radius=5&maxMatches=10&ambiguities=ignore&hostedData=mqap.ntpois|group_sic_code=?|581301&outFormat=json&key=" + ApiKey;
@@ -101,11 +120,18 @@ $(document).ready(function () {
                 method: 'GET'
             }).then(function (response) {
                 console.log(response);
+                barLat = [];
+                barLng = [];
                 for (var i = 0; i <= 10; i++) {
                     // response.searchResults[i]
                     $("#barsBody").append("<tr><td>" + response.searchResults[i].name + "</td></tr>");
+                    var x = response.searchResults[i].fields.disp_lat;
+                    var y = response.searchResults[i].fields.disp_lng;
+                    barLat.push(x);
+                    barLng.push(y);
                 }
             })
+            check();
         }});
 
     // Home HTML
@@ -160,7 +186,7 @@ $(document).ready(function () {
             long = response.city.coord.lon;
             console.log(lat);
             console.log(long);
-            check();
+            
             $("#loadingScreen").hide();
             // window.location = "./home.html"
             map()
@@ -183,10 +209,17 @@ $(document).ready(function () {
                 method: 'GET'
             }).then(function (response) {
                 console.log(response);
+                sitesLat = [];
+                sitesLng = [];
                 for (var i = 0; i <= 10; i++) {
                     // response.searchResults[i]
                     $("#sitesBody").append("<tr><td>" + response.searchResults[i].name + "</td></tr>");
+                    var x = response.searchResults[i].fields.disp_lat;
+                    var y = response.searchResults[i].fields.disp_lng;
+                    sitesLat.push(x);
+                    sitesLng.push(y);
                 }
+                console.log(sitesLat)
             })
             var QueryUrl1 = "https://www.mapquestapi.com/search/v2/radius?origin=" + city + "&radius=5&maxMatches=10&ambiguities=ignore&hostedData=mqap.ntpois|group_sic_code=?|581208&outFormat=json&key=" + ApiKey;
             $.ajax({
@@ -194,9 +227,15 @@ $(document).ready(function () {
                 method: 'GET'
             }).then(function (response) {
                 console.log(response);
+                restLat = [];
+                restLng = [];
                 for (var i = 0; i <= 10; i++) {
                     // response.searchResults[i]
                     $("#restBody").append("<tr><td>" + response.searchResults[i].name + "</td></tr>");
+                    var x = response.searchResults[i].fields.disp_lat;
+                    var y = response.searchResults[i].fields.disp_lng;
+                    restLat.push(x);
+                    restLng.push(y);
                 }
             })
             var QueryUrl3 = "https://www.mapquestapi.com/search/v2/radius?origin=" + city + "&radius=5&maxMatches=10&ambiguities=ignore&hostedData=mqap.ntpois|group_sic_code=?|581301&outFormat=json&key=" + ApiKey;
@@ -205,11 +244,18 @@ $(document).ready(function () {
                 method: 'GET'
             }).then(function (response) {
                 console.log(response);
+                barLat = [];
+                barLng = [];
                 for (var i = 0; i <= 10; i++) {
                     // response.searchResults[i]
                     $("#barsBody").append("<tr><td>" + response.searchResults[i].name + "</td></tr>");
+                    var x = response.searchResults[i].fields.disp_lat;
+                    var y = response.searchResults[i].fields.disp_lng;
+                    barLat.push(x);
+                    barLng.push(y);
                 }
             })
+            check();
         }});
         // Map
         function initMap() {  
@@ -221,5 +267,24 @@ $(document).ready(function () {
                 document.getElementById('map'), { zoom: 8, center: uluru });
             // The marker, positioned at Uluru
             var marker = new google.maps.Marker({ position: uluru, map: map });
+
+            $("#sites").on("click", function() {
+                for (var i = 0; i <= sitesLat.length; i++) {
+                    var position = {lat: sitesLat[i], lng: sitesLng[i]}
+                    marker = new google.maps.Marker({ position: position, map: map });
+                }
+            });
+            $("#restaurants").on("click", function() {
+                for (var i = 0; i <= restLat.length; i++) {
+                    var position = {lat: restLat[i], lng: restLng[i]}
+                    marker = new google.maps.Marker({ position: position, map: map });
+                }
+            });
+            $("#bars").on("click", function() {
+                for (var i = 0; i <= barLat.length; i++) {
+                    var position = {lat: barLat[i], lng: barLng[i]}
+                    marker = new google.maps.Marker({ position: position, map: map });
+                }
+            });
         }
     }); // Document Ready
